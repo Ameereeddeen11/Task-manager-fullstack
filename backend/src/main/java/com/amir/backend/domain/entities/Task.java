@@ -26,6 +26,10 @@ public class Task {
     @Column(name = "priority", nullable = false)
     private TaskPriority priority;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_list_id")
+    private TaskList taskList;
+
     @Column(name = "due_date")
     private LocalDateTime dueDate;
 
@@ -43,6 +47,7 @@ public class Task {
             String description,
             TaskStatus status,
             TaskPriority priority,
+            TaskList taskList,
             LocalDateTime dueDate,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
@@ -52,6 +57,7 @@ public class Task {
         this.description = description;
         this.status = status;
         this.priority = priority;
+        this.taskList = taskList;
         this.dueDate = dueDate;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -97,6 +103,14 @@ public class Task {
         this.priority = priority;
     }
 
+    public TaskList getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(TaskList taskList) {
+        this.taskList = taskList;
+    }
+
     public LocalDateTime getDueDate() {
         return dueDate;
     }
@@ -120,19 +134,7 @@ public class Task {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return Objects.equals(id, task.id) && Objects.equals(title, task.title) && Objects.equals(description, task.description) && status == task.status && priority == task.priority && Objects.equals(dueDate, task.dueDate) && Objects.equals(createdAt, task.createdAt) && Objects.equals(updatedAt, task.updatedAt);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, description, status, priority, dueDate, createdAt, updatedAt);
-    }
-
+    
     @Override
     public String toString() {
         return "Task{" +
@@ -141,9 +143,23 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", priority=" + priority +
+                ", taskList=" + taskList +
                 ", dueDate=" + dueDate +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(id, task.id) && Objects.equals(title, task.title) && Objects.equals(description, task.description) && status == task.status && priority == task.priority && Objects.equals(taskList, task.taskList) && Objects.equals(dueDate, task.dueDate) && Objects.equals(createdAt, task.createdAt) && Objects.equals(updatedAt, task.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, status, priority, taskList, dueDate, createdAt, updatedAt);
+    }
+
 }
