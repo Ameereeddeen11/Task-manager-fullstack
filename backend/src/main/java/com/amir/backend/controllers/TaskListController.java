@@ -1,9 +1,11 @@
 package com.amir.backend.controllers;
 
 import com.amir.backend.domain.dto.TaskListDto;
+import com.amir.backend.domain.entities.TaskList;
 import com.amir.backend.mappers.TaskListMapper;
 import com.amir.backend.services.TaskListService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,5 +31,15 @@ public class TaskListController {
                 .stream()
                 .map(taskListMapper::toDto)
                 .toList();
+    }
+
+    public TaskListDto createTaskList(
+            @RequestBody
+            TaskListDto taskListDto
+    ) throws IllegalAccessException {
+        TaskList createdTaskList = taskListService.createTaskList(
+                taskListMapper.fromDto(taskListDto)
+        );
+        return taskListMapper.toDto(createdTaskList);
     }
 }
