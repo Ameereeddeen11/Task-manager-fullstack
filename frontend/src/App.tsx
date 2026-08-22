@@ -1,5 +1,6 @@
 import { useApp } from './AppProvider';
 import { TaskListsScreen } from './components/TaskListsScreen';
+import { CreateUpdateTaskListScreen } from './components/CreateUpdateTaskListScreen';
 
 export default function App() {
     const { currentScreen, error } = useApp();
@@ -10,12 +11,12 @@ export default function App() {
                 return <TaskListsScreen />;
             case 'CREATE_TASK_LIST':
             case 'UPDATE_TASK_LIST':
-                return <div>Formulář pro seznam úkolů (připravíme v dalším kroku)</div>;
+                return <CreateUpdateTaskListScreen />;
             case 'TASKS':
-                return <div>Obrazovka detailu úkolů (připravíme v dalším kroku)</div>;
+                return <div>Task detail screen</div>;
             case 'CREATE_TASK':
             case 'UPDATE_TASK':
-                return <div>Formulář pro úkol (připravíme v dalším kroku)</div>;
+                return <div>Task form</div>;
             default:
                 return <TaskListsScreen />;
         }

@@ -31,10 +31,11 @@ public class TaskListController {
                 .toList();
     }
 
+    @PostMapping
     public TaskListDto createTaskList(
             @RequestBody
             TaskListDto taskListDto
-    ) throws IllegalAccessException {
+    ) {
         TaskList createdTaskList = taskListService.createTaskList(
                 taskListMapper.fromDto(taskListDto)
         );

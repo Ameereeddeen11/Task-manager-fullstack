@@ -53,8 +53,8 @@ public class TaskListMapperImpl implements TaskListMapper {
     }
 
     private Double calculateCompletionPercentage(List<Task> tasks) {
-        if (null == tasks) {
-            return null;
+        if (null == tasks || tasks.isEmpty()) {
+            return 0.0;
         }
 
         long closedTaskCount = tasks.stream().filter(task ->

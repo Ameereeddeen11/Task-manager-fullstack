@@ -6,6 +6,7 @@ import com.amir.backend.services.TaskListService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,13 +23,13 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
-    public TaskList createTaskList(TaskList taskList) throws IllegalAccessException {
+    public TaskList createTaskList(TaskList taskList) {
         if (null != taskList.getId()) {
             throw new IllegalArgumentException("Task list ID must be null when creating a new task list");
         }
 
-        if (null == taskList.getTasks() || taskList.getTitle().isBlank()) {
-            throw new IllegalAccessException("Task list must have a title and tasks when creating a new task list");
+        if (null == taskList.getTitle() || taskList.getTitle().isBlank()) {
+            throw new IllegalArgumentException("Task list must have a title when creating a new task list");
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -37,7 +38,7 @@ public class TaskListServiceImpl implements TaskListService {
                 null,
                 taskList.getTitle(),
                 taskList.getDescription(),
-                null,
+                new ArrayList<>(),
                 now,
                 now
         ));
