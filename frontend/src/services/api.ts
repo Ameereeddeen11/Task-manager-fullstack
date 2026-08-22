@@ -1,5 +1,5 @@
 import type { TaskList } from "../domain/TaskList.ts";
-import { Task } from "../domain/Task.ts";
+import type { Task } from "../domain/Task.ts";
 
 const API_URL = "http://localhost:8080"
 
@@ -29,9 +29,19 @@ async function request<T>(
     return response.json();
 }
 
+// TaskList API functions
+// CRUD operations for TaskList
+// Create, Read, Update, Delete
+// Each function returns a Promise that resolves to the expected type
 export const getTaskLists = async (): Promise<TaskList[]> => {
     return request<TaskList[]>("/task-lists");
 };
+
+export const getTaskListById = async (
+    taskListId: string
+): Promise<TaskList> => {
+    return request<TaskList>(`/task-lists/${taskListId}`);
+}
 
 export const createTaskList = async (
     taskList: Partial<TaskList>
@@ -41,3 +51,78 @@ export const createTaskList = async (
         body: JSON.stringify(taskList),
     });
 }
+
+export const updateTaskList = async (
+    taskListId: string,
+    taskList: Partial<TaskList>
+): Promise<TaskList> => {
+    return request<TaskList>(
+        `/task-lists/${taskListId}`,
+        {
+            method: "PUT",
+            body: JSON.stringify(taskList)
+        }
+    );
+};
+
+export const deleteTaskList = async (
+    taskListId: string
+): Promise<void> => {
+    return request<void>(
+        `/task-lists/${taskListId}`,
+        {
+            method: "DELETE"
+        }
+    );
+};
+
+// Task API functions
+// CRUD operations for Task
+// Create, Read, Update, Delete
+// Each function returns a Promise that resolves to the expected type
+export const getTasks = async (
+    taskListId: string
+): Promise<Task[]> => {
+    return request<Task[]>(
+        `/task-lists/${taskListId}`,
+    );
+};
+
+export const createTask = async (
+    taskListId: string,
+    task: Partial<Task>
+): Promise<Task> => {
+    return request<Task>(
+        `/task-lists/${taskListId}`,
+        {
+            method: "POST",
+            body: JSON.stringify(task),
+        }
+    );
+};
+
+export const updateTask = async (
+    taskListId: string,
+    taskId: string,
+    task: Partial<Task>
+): Promise<Task> => {
+    return request<Task>(
+        `/task-lists/${taskListId}/tasks/${taskId}`,
+        {
+            method: "PUT",
+            body: JSON.stringify(task),
+        }
+    );
+};
+
+export const deleteTask = async (
+    taskListId: string,
+    taskId: string
+): Promise<void> => {
+    return request<void>(
+        `/task-lists/${taskListId}/tasks/${taskId}`,
+        {
+            method: "DELETE",
+        }
+    );
+};
