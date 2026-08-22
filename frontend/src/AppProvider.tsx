@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import * as api from "./services/api.ts";
-import type { TaskList } from "./domain/TaskList.ts";
-import type { Task } from "./domain/Task.ts";
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import * as api from './services/api';
+import type {TaskList} from './domain/TaskList';
+import type {Task} from './domain/Task';
 
 export type Screen =
     | 'TASK_LISTS'
@@ -30,14 +30,10 @@ interface AppContextType {
     removeTask: (taskId: string) => Promise<void>;
 }
 
-const AppContext = createContext<AppContextType | undefined>(
-    undefined
-);
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const AppProvider: React.FC<{ children: ReactNode }> = (
-    { children }
-) => {
-    const [currentScreen, setCurrentScreen] = useState<Screen>('TASK_LISTS' as Screen);
+export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const [currentScreen, setCurrentScreen] = useState<Screen>('TASK_LISTS');
     const [taskLists, setTaskLists] = useState<TaskList[]>([]);
     const [selectedTaskList, setSelectedTaskList] = useState<TaskList | null>(null);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -47,22 +43,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = (
     const fetchTaskLists = async () => {
         setLoading(true);
         setError(null);
-
         try {
             const data = await api.getTaskLists();
             setTaskLists(data);
 
+            // Pokud máme vybraný TaskList, aktualizujeme i jeho data
             if (selectedTaskList?.id) {
-                const updatedSelected = data.find((
-                    list
-                ) => list.id === selectedTaskList.id);
-
+                const updatedSelected = data.find((l) => l.id === selectedTaskList.id);
                 if (updatedSelected) {
                     setSelectedTaskList(updatedSelected);
                 }
             }
-        } catch (error: any) {
-            setError(error.message || "Failed to fetch task lists");
+        } catch (err: any) {
+            setError(err.message || 'Chyba při načítání seznamů.');
         } finally {
             setLoading(false);
         }
@@ -72,90 +65,73 @@ export const AppProvider: React.FC<{ children: ReactNode }> = (
         fetchTaskLists();
     }, []);
 
-    const saveTaskList = async (
-        data: Partial<TaskList>
-    ) => {
+    const saveTaskList = async (data: Partial<TaskList>) => {
         setLoading(true);
-
         try {
-            if (selectedTaskList?.id && currentScreen === "UPDATE_TASK_LIST") {
+            if (selectedTaskList?.id && currentScreen === 'UPDATE_TASK_LIST') {
                 await api.updateTaskList(selectedTaskList.id, data);
             } else {
                 await api.createTaskList(data);
             }
-
             await fetchTaskLists();
-            setCurrentScreen("TASK_LISTS");
-        } catch (error: any) {
-            setError(error.message || "Failed to save task list");
+            setCurrentScreen('TASK_LISTS');
+        } catch (err: any) {
+            setError(err.message || 'Chyba při ukládání seznamu.');
         } finally {
             setLoading(false);
         }
     };
 
-    const removeTaskList = async (
-        id: string
-    ) => {
+    // Smazání TaskListu
+    const removeTaskList = async (id: string) => {
         setLoading(true);
-
         try {
             await api.deleteTaskList(id);
-
             if (selectedTaskList?.id === id) {
                 setSelectedTaskList(null);
             }
-
             await fetchTaskLists();
-            setCurrentScreen("TASK_LISTS");
-        } catch (error: any) {
-            setError(error.message || "Failed to remove task list");
+            setCurrentScreen('TASK_LISTS');
+        } catch (err: any) {
+            setError(err.message || 'Chyba při mazání seznamu.');
         } finally {
             setLoading(false);
         }
     };
 
-    const saveTask = async (
-        data: Partial<Task>
-    ) => {
+    const saveTask = async (data: Partial<Task>) => {
         if (!selectedTaskList?.id) return;
-
         setLoading(true);
-
         try {
-            if (selectedTaskList?.id && currentScreen === "UPDATE_TASK") {
-                await api.updateTask(selectedTaskList.id, selectedTask?.id as string, data);
+            if (selectedTask?.id && currentScreen === 'UPDATE_TASK') {
+                await api.updateTask(selectedTaskList.id, selectedTask.id, data);
             } else {
                 await api.createTask(selectedTaskList.id, data);
             }
-
             await fetchTaskLists();
-            setCurrentScreen("TASKS");
-        } catch (error: any) {
-            setError(error.message || "Failed to save task");
+            setCurrentScreen('TASKS');
+        } catch (err: any) {
+            setError(err.message || 'Chyba při ukládání úkolu.');
         } finally {
             setLoading(false);
         }
     };
 
-    const removeTask = async (
-        taskId: string
-    ) => {
+    const removeTask = async (taskId: string) => {
         if (!selectedTaskList?.id) return;
-
         setLoading(true);
-
         try {
             await api.deleteTask(selectedTaskList.id, taskId);
             await fetchTaskLists();
-            setCurrentScreen("TASKS");
-        } catch (error: any) {
-            setError(error.message || "Failed to remove task");
+            setCurrentScreen('TASKS');
+        } catch (err: any) {
+            setError(err.message || 'Chyba při mazání úkolu.');
         } finally {
             setLoading(false);
         }
     };
 
-    return(
+    return (
         <AppContext.Provider
             value={{
                 currentScreen,
@@ -171,7 +147,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = (
                 saveTaskList,
                 removeTaskList,
                 saveTask,
-                removeTask
+                removeTask,
             }}
         >
             {children}
@@ -182,7 +158,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = (
 export const useApp = () => {
     const context = useContext(AppContext);
     if (!context) {
-        throw new Error("useApp must be used within an AppProvider");
+        throw new Error('useApp must be used within an AppProvider');
     }
     return context;
 };

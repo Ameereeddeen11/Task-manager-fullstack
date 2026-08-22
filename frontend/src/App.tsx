@@ -1,45 +1,47 @@
-import { useState, useEffect } from 'react'
-import type { TaskList } from "./domain/TaskList.ts";
-import { getTaskLists } from "./services/api.ts";
-import './App.css'
+import { useApp } from './AppProvider';
+import { TaskListsScreen } from './components/TaskListsScreen';
 
-function App() {
-    const [taskLists, setTaskLists] = useState<TaskList[]>([]);
-    const [loading, setLoading] = useState<boolean>(true)
+export default function App() {
+    const { currentScreen, error } = useApp();
 
-    useEffect(() => {
-        getTaskLists()
-            .then((data) => setTaskLists(data))
-            .catch((error) => console.log("Error fetching task lists:", error))
-            .finally(() => setLoading(false));
-    }, []);
-
-    if (loading) return <div className={"p-4 text-center"}>Loading...</div>;
+    const renderScreen = () => {
+        switch (currentScreen) {
+            case 'TASK_LISTS':
+                return <TaskListsScreen />;
+            case 'CREATE_TASK_LIST':
+            case 'UPDATE_TASK_LIST':
+                return <div>Formulář pro seznam úkolů (připravíme v dalším kroku)</div>;
+            case 'TASKS':
+                return <div>Obrazovka detailu úkolů (připravíme v dalším kroku)</div>;
+            case 'CREATE_TASK':
+            case 'UPDATE_TASK':
+                return <div>Formulář pro úkol (připravíme v dalším kroku)</div>;
+            default:
+                return <TaskListsScreen />;
+        }
+    };
 
     return (
-        <main className={"max-w-xl mx-auto p-6"}>
-            <h1 className={"text-2xl font-bold mb-4"}>
-                My Task Lists
-            </h1>
-            <ul className={"space-y-2"}>
-                {taskLists.map((taskList) => (
-                    <li
-                        key={taskList.id}
-                        className={"p-4 bg-white rounded-lg shadow border border-gray-200"}
-                    >
-                        <h2 className={"text-lg font-semibold"}>
-                            {taskList.title}
-                        </h2>
-                        {taskList.description &&
-                            <p className={"text-gray-600 text-sm"}>
-                                {taskList.description}
-                            </p>
-                        }
-                    </li>
-                ))}
-            </ul>
-        </main>
+        <div className="min-h-screen bg-slate-50 text-slate-800">
+            <header className="bg-white border-b border-gray-200">
+                <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                        <span className="text-xl font-black text-indigo-600 tracking-tight">TaskFlow</span>
+                    </div>
+                </div>
+            </header>
+
+            {error && (
+                <div className="max-w-4xl mx-auto px-4 mt-4">
+                    <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+                        {error}
+                    </div>
+                </div>
+            )}
+
+            <main className="max-w-4xl mx-auto px-4 py-8">
+                {renderScreen()}
+            </main>
+        </div>
     );
 }
-
-export default App

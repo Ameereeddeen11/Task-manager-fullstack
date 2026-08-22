@@ -15,7 +15,10 @@ async function request<T>(
         ...options,
     };
 
-    const response = await fetch(`${API_URL}${endpoint}`, config);
+    const response = await fetch(
+        `${API_URL}${endpoint}`,
+        config
+    );
 
     if (!response.ok) {
         const errorBody = await response.text();
@@ -34,23 +37,28 @@ async function request<T>(
 // Create, Read, Update, Delete
 // Each function returns a Promise that resolves to the expected type
 export const getTaskLists = async (): Promise<TaskList[]> => {
-    return request<TaskList[]>("/task-lists");
+    return request<TaskList[]>('/task-lists');
 };
 
-export const getTaskListById = async (
+export const getTaskList = async (
     taskListId: string
 ): Promise<TaskList> => {
-    return request<TaskList>(`/task-lists/${taskListId}`);
-}
+    return request<TaskList>(
+        `/task-lists/${taskListId}`
+    );
+};
 
 export const createTaskList = async (
     taskList: Partial<TaskList>
 ): Promise<TaskList> => {
-    return request<TaskList>("/task-lists", {
-        method: "POST",
-        body: JSON.stringify(taskList),
-    });
-}
+    return request<TaskList>(
+        '/task-lists',
+        {
+            method: "POST",
+            body: JSON.stringify(taskList),
+        }
+    );
+};
 
 export const updateTaskList = async (
     taskListId: string,
@@ -76,10 +84,6 @@ export const deleteTaskList = async (
     );
 };
 
-// Task API functions
-// CRUD operations for Task
-// Create, Read, Update, Delete
-// Each function returns a Promise that resolves to the expected type
 export const getTasks = async (
     taskListId: string
 ): Promise<Task[]> => {

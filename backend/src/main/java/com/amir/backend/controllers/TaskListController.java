@@ -4,15 +4,13 @@ import com.amir.backend.domain.dto.TaskListDto;
 import com.amir.backend.domain.entities.TaskList;
 import com.amir.backend.mappers.TaskListMapper;
 import com.amir.backend.services.TaskListService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/task-lists")
+@CrossOrigin(origins = "http://localhost:5173")
 public class TaskListController {
     private final TaskListService taskListService;
     private final TaskListMapper taskListMapper;
