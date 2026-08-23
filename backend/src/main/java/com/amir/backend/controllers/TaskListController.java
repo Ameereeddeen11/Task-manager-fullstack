@@ -4,12 +4,11 @@ import com.amir.backend.domain.dto.TaskListDto;
 import com.amir.backend.domain.entities.TaskList;
 import com.amir.backend.mappers.TaskListMapper;
 import com.amir.backend.services.TaskListService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/task-lists")
@@ -33,6 +32,7 @@ public class TaskListController {
                 .toList();
     }
 
+    @PostMapping
     public TaskListDto createTaskList(
             @RequestBody
             TaskListDto taskListDto
@@ -41,5 +41,36 @@ public class TaskListController {
                 taskListMapper.fromDto(taskListDto)
         );
         return taskListMapper.toDto(createdTaskList);
+    }
+
+    @GetMapping(path = "/{task_list_id}")
+    public Optional<TaskListDto> getTaskListById(
+            @PathVariable("task_list_id")
+            UUID taskListId
+    ) {
+        return taskListService.getTaskListById(taskListId).map(taskListMapper::toDto);
+    }
+
+    @PutMapping(path = "/{task_list_id}")
+    public TaskListDto updateTaskList(
+            @PathVariable("task_list_id")
+            UUID taskListId,
+            @RequestBody
+            TaskListDto taskListDto
+    ) {
+        TaskList updatedTaskList = taskListService.updateTaskList(
+                taskListId,
+                taskListMapper.fromDto(taskListDto)
+        );
+
+        return taskListMapper.toDto(updatedTaskList);
+    }
+
+    @DeleteMapping(path = "/{task_list_id}")
+    public void deleteTaskList(
+            @PathVariable("task_list_id")
+            UUID id
+    ) {
+        taskListService.deleteTaskList(id);
     }
 }
