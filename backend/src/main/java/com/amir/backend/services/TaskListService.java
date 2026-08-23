@@ -10,4 +10,5 @@ public interface TaskListService {
     List<TaskList> listTaskLists();
     TaskList createTaskList(TaskList taskList) throws IllegalAccessException;
     Optional<TaskList> getTaskListById(UUID id);
+    TaskList updateTaskList(UUID id, TaskList taskList);
 }
