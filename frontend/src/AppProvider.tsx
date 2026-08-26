@@ -46,16 +46,17 @@ export const AppProvider: React.FC<
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchTaskLists = async () => {
+    const fetchTaskLists = React.useCallback(async () => {
         setLoading(true);
         setError(null);
 
         try {
             const data = await api.getTaskLists();
-            setTaskLists(data);
+            const safeData = data || [];
+            setTaskLists(safeData);
 
             if (selectedTaskList?.id) {
-                const updatedSelected = data.find((l) => l.id === selectedTaskList.id);
+                const updatedSelected = safeData.find((l) => l.id === selectedTaskList.id);
                 if (updatedSelected) {
                     setSelectedTaskList(updatedSelected);
                 }
@@ -65,11 +66,11 @@ export const AppProvider: React.FC<
         } finally {
             setLoading(false);
         }
-    };
+    }, [selectedTaskList?.id]);
 
     useEffect(() => {
         fetchTaskLists();
-    }, []);
+    }, [fetchTaskLists]);
 
     // Creation / Update of TaskList
     const saveTaskList = async (
