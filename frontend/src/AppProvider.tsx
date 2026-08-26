@@ -79,8 +79,8 @@ export const AppProvider: React.FC<
         setLoading(true);
 
         try {
-            if (selectedTaskList?.id && currentScreen === 'UPDATE_TASK_LIST') {
-                await api.updateTaskList(selectedTaskList.id, data);
+            if (data.id) {
+                await api.updateTaskList(data.id, data);
             } else {
                 await api.createTaskList(data);
             }
@@ -122,8 +122,8 @@ export const AppProvider: React.FC<
         setLoading(true);
 
         try {
-            if (selectedTask?.id && currentScreen === 'UPDATE_TASK') {
-                await api.updateTask(selectedTaskList.id, selectedTask.id, data);
+            if (data.id) {
+                await api.updateTask(selectedTaskList.id, data.id, data);
             } else {
                 await api.createTask(selectedTaskList.id, data);
             }
