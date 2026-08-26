@@ -26,16 +26,19 @@ export const CreateUpdateTaskListScreen: React.FC = () => {
         }
     }, [isEditing, selectedTaskList]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (
+        e: React.FormEvent
+    ) => {
         e.preventDefault();
         setValidationError(null);
 
         if (!title.trim()) {
-            setValidationError('Název seznamu je povinný.');
+            setValidationError('Title is required.');
             return;
         }
 
         await saveTaskList({
+            id: isEditing && selectedTaskList ? selectedTaskList.id : undefined,
             title: title.trim(),
             description: description.trim() ? description.trim() : undefined,
         });
