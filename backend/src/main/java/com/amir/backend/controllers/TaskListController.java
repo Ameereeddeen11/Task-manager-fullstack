@@ -12,6 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/task-lists")
+@CrossOrigin(origins = "http://localhost:5173")
 public class TaskListController {
     private final TaskListService taskListService;
     private final TaskListMapper taskListMapper;
@@ -36,7 +37,7 @@ public class TaskListController {
     public TaskListDto createTaskList(
             @RequestBody
             TaskListDto taskListDto
-    ) throws IllegalAccessException {
+    ) {
         TaskList createdTaskList = taskListService.createTaskList(
                 taskListMapper.fromDto(taskListDto)
         );

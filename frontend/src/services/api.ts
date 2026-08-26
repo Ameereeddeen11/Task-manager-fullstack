@@ -1,18 +1,20 @@
 import type {TaskList} from '../domain/TaskList';
 import type {Task} from '../domain/Task';
 
-const URL = 'http://localhost:8080';
+const URL = '/api';
 
 async function request<T>(
     endpoint: string,
     options: RequestInit = {}
 ): Promise<T> {
+    const { headers, ...restOptions } = options;
+    
     const config: RequestInit = {
+        ...restOptions,
         headers: {
             'Content-Type': 'application/json',
-            ...options.headers,
+            ...(headers || {}),
         },
-        ...options,
     };
 
     const response = await fetch(`${URL}${endpoint}`, config);
@@ -22,11 +24,16 @@ async function request<T>(
         throw new Error(errorBody || `HTTP error! Status: ${response.status}`);
     }
 
-    if (response.status === 204 || response.headers.get('content-length') === '0') {
-        return {} as T;
+    if (response.status === 204) {
+        return null as unknown as T;
     }
 
-    return response.json();
+    const responseText = await response.text();
+    if (!responseText) {
+        return null as unknown as T;
+    }
+
+    return JSON.parse(responseText);
 }
 
 // Task List API functions
@@ -61,7 +68,7 @@ export const updateTaskList = async (
         `/task-lists/${taskListId}`,
         {
             method: 'PUT',
-            body: JSON.stringify(taskList),
+            body: JSON.stringify({ ...taskList, id: taskListId }),
         }
     );
 };
@@ -108,7 +115,10 @@ export const updateTask = async (
         `/task-lists/${taskListId}/tasks/${taskId}`,
         {
             method: 'PUT',
-            body: JSON.stringify(task),
+            body: JSON.stringify({
+                ...task,
+                id: taskId
+            }),
         }
     );
 };

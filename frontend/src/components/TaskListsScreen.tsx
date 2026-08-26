@@ -51,7 +51,7 @@ export const TaskListsScreen: React.FC = () => {
                         Task List
                     </h1>
                     <p className="text-sm text-gray-500">
-                        Choose a manage your task lists.
+                        Choose and manage your task lists.
                         Click on a list to view its tasks, or create a new one to get started.
                     </p>
                 </div>
