@@ -53,7 +53,7 @@ public class TaskListMapperImpl implements TaskListMapper {
     }
 
     private Double calculateCompletionPercentage(List<Task> tasks) {
-        if (null == tasks) {
+        if (null == tasks || tasks.isEmpty()) {
             return null;
         }
 
