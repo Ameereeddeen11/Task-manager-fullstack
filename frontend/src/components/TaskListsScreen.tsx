@@ -86,7 +86,8 @@ export const TaskListsScreen: React.FC = () => {
                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
                     {taskLists.map((list) => {
                         const count = list.count ?? (list.tasks ? list.tasks.length : 0);
-                        const progress = Math.round((list.progress ?? 0) * 100);
+                        let progress = list.progress ? Math.round(Number(list.progress) * 100) : 0;
+                        if (Number.isNaN(progress)) progress = 0;
 
                         return (
                             <div

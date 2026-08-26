@@ -1,9 +1,11 @@
 import {useApp} from './AppProvider';
 import {TaskListsScreen} from './components/TaskListsScreen';
 import {CreateUpdateTaskListScreen} from './components/CreateUpdateTaskListScreen';
+import {TasksScreen} from './components/TasksScreen';
+import {CreateUpdateTaskScreen} from './components/CreateUpdateTaskScreen';
 
 export default function App() {
-    const {currentScreen, error} = useApp();
+    const { currentScreen, error } = useApp();
 
     const renderScreen = () => {
         switch (currentScreen) {
@@ -13,10 +15,10 @@ export default function App() {
             case 'UPDATE_TASK_LIST':
                 return <CreateUpdateTaskListScreen/>;
             case 'TASKS':
-                return <div>ToDo</div>;
+                return <TasksScreen />;
             case 'CREATE_TASK':
             case 'UPDATE_TASK':
-                return <div>ToDo</div>;
+                return <CreateUpdateTaskScreen />;
             default:
                 return <TaskListsScreen/>;
         }
@@ -27,7 +29,9 @@ export default function App() {
             <header className="bg-white border-b border-gray-200">
                 <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                        <span className="text-xl font-black text-indigo-600 tracking-tight">TaskFlow</span>
+                        <span className="text-xl font-black text-indigo-600 tracking-tight">
+                            TaskFlow
+                        </span>
                     </div>
                 </div>
             </header>
